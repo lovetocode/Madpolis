@@ -1433,3 +1433,13 @@ layer_0/tile_data = PackedInt32Array(-65554, 0, 0, -18, 196608, 1, 65518, 196608
 
 [node name="Player" parent="." instance=ExtResource("2_emxsh")]
 position = Vector2(40, 71)
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Player"]
+remote_path = NodePath("../../Camera2D")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(40, 71)
+process_callback = 0
+position_smoothing_enabled = true
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
