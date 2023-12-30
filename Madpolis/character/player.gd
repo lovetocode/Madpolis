@@ -36,14 +36,12 @@ func _physics_process(delta):
 			jump()
 		# double jump
 		elif not has_double_jumped:
-			velocity.y = double_jump_velocity
-			has_double_jumped = true
-			
+			double_jump()
 
 	# Get the input direction and handle the movement/deceleration.
 	# As good practice, you should replace UI actions with custom gameplay actions.
 	direction = Input.get_vector("left", "right", "up", "down")
-	if direction:
+	if direction.x != 0 && animated_sprite_2d.animation != "jump_end" :
 		velocity.x = direction.x * speed
 	else:
 		velocity.x = move_toward(velocity.x, 0, speed)
@@ -54,21 +52,30 @@ func _physics_process(delta):
 	
 func update_animaltion():
 	if not animation_locked:
-		if direction.x != 0:
-			animated_sprite_2d.play("run")
+		if not is_on_floor():
+			animated_sprite_2d.play("jump_loop")
 		else:
-			animated_sprite_2d.play("idle")
+			if direction.x != 0:
+				animated_sprite_2d.play("run")
+			else:
+				animated_sprite_2d.play("idle")
 			
 func update_facing_direction():
 	if direction.x > 0:
 		animated_sprite_2d.flip_h = false
 	elif direction.x < 0:
 		animated_sprite_2d.flip_h = true
-
+		
 func jump():
 	velocity.y = jump_velocity
 	animated_sprite_2d.play("jump_start")
 	animation_locked = true
+
+func double_jump():
+	velocity.y = double_jump_velocity
+	animated_sprite_2d.play("jump_double")
+	animation_locked = true
+	has_double_jumped = true
 
 func land():
 	animated_sprite_2d.play("jump_end")
@@ -76,6 +83,7 @@ func land():
 	
 		
 func _on_animated_sprite_2d_animation_finished():
-	if (animated_sprite_2d.animation == "jump_end"):
+	if(["jump_end", "jump_start", "double_jump"].has(animated_sprite_2d.animation)):
 		animation_locked = false
+
 
